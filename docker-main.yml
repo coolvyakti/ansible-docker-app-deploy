@@ -1,0 +1,30 @@
+# Main playbook to install docker
+# Playbook for docker installation should be included only if docker is not already installed.
+---
+- name: Invoke docker-install playbook if docker is not installed
+  hosts: appservers
+  become: yes
+  vars_files: 
+    - app-values.yml
+#  hosts: 127.0.0.1
+#  connection: local
+
+  tasks:
+  - name: get service facts
+    service_facts:
+
+  # Invoke tasks to install docker on the target machine.
+  # will only be installed if docker is not already present
+  - name: include docker-install.yml if docker not installed  
+    include_tasks: docker-install.yml
+    when: 
+      - ansible_facts.services['docker.service'] is undefined
+
+  # Invoke tasks if docker already installed on target machine.
+  # will deploy php app container on target (slave) machine
+  - name: include app-deploy.yml if docker is installed
+    include_tasks: app-deploy.yml
+    when:
+      - ansible_facts.services['docker.service'] is defined
+      - "'docker.service' in ansible_facts.services" 
+

@@ -1,0 +1,14 @@
+# tasks for pulling app image and deploying it to a container
+---
+   - name: pull the app image from docker hub
+     docker_image:
+       name: "{{app_image}}"
+       source: pull
+       state: present
+
+   - name: deploy the app image in a container
+     docker_container:
+       name: "{{ app_name }}"
+       image: "{{ app_image }}"
+       ports: 80:88
+       state: started

@@ -1,0 +1,4 @@
+# app image name and app name values
+---
+app_name: php-nginx-app
+app_image: coolvyakti/php-nginx-app:9
