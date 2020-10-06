@@ -1,0 +1,15 @@
+# playbook to remove the php docker container
+# called when the selenium test fails
+---
+- name: Remove a docker container  
+  hosts: appservers
+  become: yes
+  vars_files:
+    - app-values.yml
+
+  tasks:
+  - name: remove application container
+    shell: docker rm -f {{app_name}}
+    register: done
+  - debug: msg="removed container {{app_name}}"
+    when: done.rc == 0
